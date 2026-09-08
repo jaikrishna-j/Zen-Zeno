@@ -28,6 +28,7 @@ module.exports = async (req, res) => {
   const form = new IncomingForm({
     multiples: true,
     keepExtensions: true,
+    allowEmptyFiles: true,
     maxFileSize: 25 * 1024 * 1024,
   });
 
@@ -39,7 +40,7 @@ module.exports = async (req, res) => {
       });
     });
 
-    const { fields, files } = parsed;
+    const { fields = {}, files = {} } = parsed || {};
     const payload = new FormData();
     payload.append('access_key', WEB3FORMS_KEY);
 
@@ -55,8 +56,10 @@ module.exports = async (req, res) => {
     payload.append('from_name', name);
 
     const uploadedFiles = files && files.file ? (Array.isArray(files.file) ? files.file : [files.file]) : [];
+    const validUploadedFiles = uploadedFiles.filter((file) => file && file.size > 0 && file.filepath);
+    const validUploadedFiles = uploadedFiles.filter((file) => file && file.size > 0 && file.filepath);
 
-    uploadedFiles.forEach((file) => {
+    validUploadedFiles.forEach((file) => {
       const fileStream = fs.createReadStream(file.filepath);
       payload.append('file', fileStream, {
         filename: file.originalFilename || file.newFilename,
@@ -65,8 +68,8 @@ module.exports = async (req, res) => {
     });
 
     console.log('Forwarding to Web3Forms', {
-      hasFiles: uploadedFiles.length > 0,
-      fileNames: uploadedFiles.map((file) => file.originalFilename || file.newFilename),
+      hasFiles: validUploadedFiles.length > 0,
+      fileNames: validUploadedFiles.map((file) => file.originalFilename || file.newFilename),
       subject,
       hasEmail: Boolean(email),
     });
