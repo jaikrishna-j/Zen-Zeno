@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Form</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card">
+        <h1>Upload Form</h1>
+        <p class="subtitle">Send files, text notes, and images securely.</p>
+
+        <form id="uploadForm">
+          <div class="grid two-columns">
+            <div class="field">
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" placeholder="Your name" />
+            </div>
+
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" placeholder="you@example.com" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="subject">Subject</label>
+            <input id="subject" name="subject" type="text" placeholder="Document upload" />
+          </div>
+
+          <div class="field">
+            <label for="message">Message / Notes</label>
+            <textarea id="message" name="message" rows="5" placeholder="Add details about the uploaded files..."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="files">Upload files</label>
+            <input
+              id="files"
+              name="file"
+              type="file"
+              multiple
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.webp,.zip,.rar,.mp4,.mov,.avi"
+            />
+            <small>Accepted: documents, images, PDFs, spreadsheets, and more.</small>
+          </div>
+
+          <button type="submit" class="submit-btn">Send to Email</button>
+          <div id="status" class="status" aria-live="polite"></div>
+        </form>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

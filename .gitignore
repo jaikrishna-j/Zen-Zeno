@@ -1,0 +1,21 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+
+# Logs
+*.log
+
+# Node / package managers
+node_modules/
+.npm/
+
+# Environment files
+.env
+.env.*
+
+# Build output
+/dist/
+/build/
