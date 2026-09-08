@@ -1,63 +1,58 @@
-# Office File Upload to Email
+# Confidential Upload Form
 
-This is a static form built for Vercel that lets you upload files, images, and notes and send them to your private email using Web3Forms.
+This project is a confidential internal upload form used to send files, notes, and attachments to a designated email destination.
 
-## Features
-- Multiple file upload
-- Accepts PDFs, images, spreadsheets, text, documents, and compressed files
-- Sends form details and uploaded files to your email through Web3Forms
-- Works as a public static site on Vercel
+## Purpose
+- Accept file uploads from a browser form
+- Support multiple document and image types
+- Send them securely through Web3Forms
+- Keep sensitive configuration such as the access key out of the frontend code
 
-## Vercel setup
+## Security requirements
+This project is intended for internal or private use only.
 
-1. Push this project to a public GitHub repository.
-2. Open https://vercel.com and log in with GitHub.
-3. Click "New Project" and import your GitHub repo.
-4. Select the repository and keep the default settings.
-5. Since this is a static site, Vercel will use the root folder automatically.
-6. Click "Deploy".
-7. After deployment, copy the Vercel live URL.
+- Do not expose secrets in a public repository
+- Store confidential values in Vercel environment variables
+- Use this project only for authorized office or internal workflows
+- Keep the repository private if it contains internal business data
 
-## Local test in VS Code
+## Local development
 
-1. Open the project folder in VS Code.
+1. Open the project in VS Code.
 2. Start a local preview:
    ```bash
    py -m http.server 8000
    ```
-3. Open:
+3. Open the form in the browser:
    ```text
    http://localhost:8000
    ```
-4. Fill out the form and upload a file.
-5. Submit the form to confirm Web3Forms is sending mail.
+4. Test the form without uploading sensitive files.
 
-## GitHub public repo steps
+## Required environment variable for deployment
+For the secure version, configure this variable in Vercel:
 
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
-git push -u origin main
+```text
+WEB3FORMS_KEY=your_web3forms_access_key
 ```
 
-## Security note
+This keeps the access key hidden from the browser and the public frontend.
 
-- Keep the Web3Forms access key in the code only if the project is private.
-- For a public repo, do not expose secrets in a way that can be abused.
-- If you want stronger protection, move the access key to a Vercel env variable and use a small backend later.
+## Deployment notes
+- Deploy only through a private or restricted GitHub repository if the project is confidential.
+- Use Vercel environment variables instead of hardcoding secrets.
+- Verify the receiving email address in Web3Forms before production use.
 
 ## Important
-
-- Web3Forms must be connected to the email address that should receive uploads.
-- Check spam/junk mail if the message does not arrive immediately.
-- This setup is intended for a simple office file-upload form and is easy to deploy on Vercel.
+- Real file uploads require Web3Forms support for attachments.
+- If the current plan does not allow file uploads, the API will reject them.
+- For confidential/internal use, keep the repository restricted and avoid public sharing.
 
 ## Project files
-- `index.html` — form layout
-- `styles.css` — styling
-- `script.js` — Web3Forms submission logic
-- `vercel.json` — Vercel config
-- `.gitignore` — ignores local and editor files
+- `index.html` — upload form UI
+- `styles.css` — page styling
+- `script.js` — frontend submission to the Vercel API
+- `api/submit.js` — secure backend route that forwards data to Web3Forms
+- `package.json` — Vercel/server dependencies
+- `.gitignore` — local and editor exclusions
+- `vercel.json` — deployment config
