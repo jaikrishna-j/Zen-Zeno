@@ -29,6 +29,7 @@ module.exports = async (req, res) => {
     multiples: true,
     keepExtensions: true,
     allowEmptyFiles: true,
+    minFileSize: 0,
     maxFileSize: 25 * 1024 * 1024,
   });
 

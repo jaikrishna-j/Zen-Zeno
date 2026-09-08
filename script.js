@@ -14,6 +14,10 @@ form.addEventListener("submit", async (event) => {
   const fileInput = form.querySelector('input[name="file"]');
   const files = Array.from(fileInput.files || []);
 
+  if (files.length === 0) {
+    formData.delete("file");
+  }
+
   const originalText = submitBtn.textContent;
   submitBtn.textContent = "Sending...";
   submitBtn.disabled = true;
