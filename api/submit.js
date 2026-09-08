@@ -20,7 +20,8 @@ module.exports = async (req, res) => {
   }
 
   if (!WEB3FORMS_KEY) {
-    res.status(500).json({ success: false, message: 'Server is missing WEB3FORMS_KEY' });
+    console.error('WEB3FORMS_KEY missing');
+    res.status(500).json({ success: false, message: 'Missing WEB3FORMS_KEY in Vercel environment variables.' });
     return;
   }
 
@@ -31,13 +32,14 @@ module.exports = async (req, res) => {
   });
 
   try {
-    const fields = await new Promise((resolve, reject) => {
+    const parsed = await new Promise((resolve, reject) => {
       form.parse(req, (err, fields, files) => {
         if (err) return reject(err);
         resolve({ fields, files });
       });
     });
 
+    const { fields, files } = parsed;
     const payload = new FormData();
     payload.append('access_key', WEB3FORMS_KEY);
 
@@ -52,32 +54,27 @@ module.exports = async (req, res) => {
     payload.append('message', message);
     payload.append('from_name', name);
 
-    const fileList = Array.isArray(fields.file) ? fields.file : [fields.file];
-    const allFiles = [];
+    const uploadedFiles = files && files.file ? (Array.isArray(files.file) ? files.file : [files.file]) : [];
 
-    for (const key of Object.keys(fields)) {
-      if (key === 'file') continue;
-    }
-
-    if (files && files.file) {
-      const arr = Array.isArray(files.file) ? files.file : [files.file];
-      arr.forEach((file) => allFiles.push(file));
-    }
-
-    const toSend = allFiles.length ? allFiles : [];
-
-    toSend.forEach((file) => {
-      const fileBuffer = fs.readFileSync(file.filepath);
-      payload.append('file', fileBuffer, {
+    uploadedFiles.forEach((file) => {
+      const fileStream = fs.createReadStream(file.filepath);
+      payload.append('file', fileStream, {
         filename: file.originalFilename || file.newFilename,
         contentType: file.mimetype || 'application/octet-stream',
       });
     });
 
+    console.log('Forwarding to Web3Forms', {
+      hasFiles: uploadedFiles.length > 0,
+      fileNames: uploadedFiles.map((file) => file.originalFilename || file.newFilename),
+      subject,
+      hasEmail: Boolean(email),
+    });
+
     const response = await new Promise((resolve, reject) => {
-      const url = 'https://api.web3forms.com/submit';
-      payload.submit(url, (err, res) => {
+      payload.submit('https://api.web3forms.com/submit', (err, res) => {
         if (err) return reject(err);
+
         let body = '';
         res.on('data', (chunk) => {
           body += chunk;
@@ -86,26 +83,26 @@ module.exports = async (req, res) => {
           try {
             resolve(JSON.parse(body || '{}'));
           } catch {
-            resolve({ success: false, message: body || 'Unknown response' });
+            resolve({ success: false, message: body || 'Unknown response from Web3Forms' });
           }
         });
       });
     });
+
+    console.log('Web3Forms response', response);
 
     if (response && response.success) {
       res.status(200).json({ success: true, message: 'Upload sent successfully.' });
       return;
     }
 
-    res.status(400).json({
-      success: false,
-      message: response && response.message ? response.message : 'Upload failed.',
-    });
+    const errorMessage = response && response.message ? response.message : 'Upload failed.';
+    res.status(400).json({ success: false, message: errorMessage });
   } catch (error) {
     console.error('submit error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while processing upload.',
+      message: error && error.message ? error.message : 'Server error while processing upload.',
     });
   }
 };
