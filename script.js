@@ -29,7 +29,14 @@ form.addEventListener("submit", async (event) => {
       body: formData,
     });
 
-    const data = await response.json();
+    const responseText = await response.text();
+    let data = {};
+
+    try {
+      data = responseText ? JSON.parse(responseText) : {};
+    } catch {
+      data.message = responseText || `Server returned HTTP ${response.status}.`;
+    }
 
     if (response.ok && data.success) {
       setStatus(files.length > 0 ? "Success! Your file(s) were sent." : "Success! Your message was sent.", "success");
@@ -39,7 +46,13 @@ form.addEventListener("submit", async (event) => {
     }
   } catch (error) {
     console.error(error);
-    setStatus("Something went wrong while contacting the server.", "error");
+    const localStaticServer = window.location.hostname === "localhost" && window.location.port === "8000";
+    setStatus(
+      localStaticServer
+        ? "The API is not running. Start this project with npm run dev, then open the Vercel local URL."
+        : `Unable to contact the API: ${error.message || "network error"}`,
+      "error"
+    );
   } finally {
     submitBtn.textContent = originalText;
     submitBtn.disabled = false;
