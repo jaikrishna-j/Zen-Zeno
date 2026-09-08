@@ -1,0 +1,14 @@
+{
+  "name": "zen-zeno-upload",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev"
+  },
+  "dependencies": {
+    "@vercel/node": "^5.1.0",
+    "form-data": "^4.0.4",
+    "formidable": "^3.0.0"
+  }
+}
