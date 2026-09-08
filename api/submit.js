@@ -57,7 +57,6 @@ module.exports = async (req, res) => {
 
     const uploadedFiles = files && files.file ? (Array.isArray(files.file) ? files.file : [files.file]) : [];
     const validUploadedFiles = uploadedFiles.filter((file) => file && file.size > 0 && file.filepath);
-    const validUploadedFiles = uploadedFiles.filter((file) => file && file.size > 0 && file.filepath);
 
     validUploadedFiles.forEach((file) => {
       const fileStream = fs.createReadStream(file.filepath);

@@ -1,20 +1,20 @@
 # Confidential Upload Form
 
-This project is a confidential internal upload form used to send files, notes, and attachments to a designated email destination.
+This project is a confidential upload form for sending files, notes, and images to a designated email address while keeping sensitive configuration out of the browser.
 
 ## Purpose
-- Accept file uploads from a browser form
+- Accept uploads from a browser form
 - Support multiple document and image types
-- Send them securely through Web3Forms
-- Keep sensitive configuration such as the access key out of the frontend code
+- Send submissions through Web3Forms
+- Keep the access key on the server side in Vercel environment variables
 
 ## Security requirements
-This project is intended for internal or private use only.
+This project is intended for confidential use.
 
-- Do not expose secrets in a public repository
-- Store confidential values in Vercel environment variables
-- Use this project only for authorized office or internal workflows
-- Keep the repository private if it contains internal business data
+- Do not expose secrets in a public frontend or public repository
+- Store sensitive values in Vercel environment variables
+- Restrict repository access and deployment permissions to authorized users
+- Only use this project for approved confidential workflows
 
 ## Local development
 
@@ -27,26 +27,26 @@ This project is intended for internal or private use only.
    ```text
    http://localhost:8000
    ```
-4. Test the form without uploading sensitive files.
+4. Test the form with non-sensitive content before production use.
 
 ## Required environment variable for deployment
-For the secure version, configure this variable in Vercel:
+Configure this value in Vercel:
 
 ```text
 WEB3FORMS_KEY=your_web3forms_access_key
 ```
 
-This keeps the access key hidden from the browser and the public frontend.
+This keeps the access key hidden from the browser and public frontend code.
 
 ## Deployment notes
-- Deploy only through a private or restricted GitHub repository if the project is confidential.
 - Use Vercel environment variables instead of hardcoding secrets.
-- Verify the receiving email address in Web3Forms before production use.
+- Verify the receiving email address in Web3Forms before live use.
+- Restrict repository and deployment access to authorized users.
 
 ## Important
-- Real file uploads require Web3Forms support for attachments.
-- If the current plan does not allow file uploads, the API will reject them.
-- For confidential/internal use, keep the repository restricted and avoid public sharing.
+- Real file attachments require Web3Forms attachment support on the active plan.
+- If the current plan does not allow file uploads, the API will reject the submission.
+- The frontend does not make the Web3Forms key public, and the form fields are intentionally left optional.
 
 ## Project files
 - `index.html` — upload form UI
